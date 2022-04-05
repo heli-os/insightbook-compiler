@@ -43,4 +43,32 @@ internal class InfixToPostfixTranslatorTest {
         val actual = translator.translate(inputExpression)
         assertEquals(expectedExpression, actual)
     }
+
+    @Test
+    fun `중위 표기법의 식을 읽고 후위 표기법으로 변환할 수 있다 (5)`() {
+        val (inputExpression, expectedExpression) = "(a+b)*c" to "ab+c*"
+        val actual = translator.translate(inputExpression)
+        assertEquals(expectedExpression, actual)
+    }
+
+    @Test
+    fun `중위 표기법의 식을 읽고 후위 표기법으로 변환할 수 있다 (6)`() {
+        val (inputExpression, expectedExpression) = "a*(b+c)-(d/e+f)" to "abc+*de/f+-"
+        val actual = translator.translate(inputExpression)
+        assertEquals(expectedExpression, actual)
+    }
+
+    @Test
+    fun `중위 표기법의 식을 읽고 후위 표기법으로 변환할 수 있다 (7)`() {
+        val (inputExpression, expectedExpression) = "a/(b-c*(d+e))" to "abcde+*-/"
+        val actual = translator.translate(inputExpression)
+        assertEquals(expectedExpression, actual)
+    }
+
+    @Test
+    fun `중위 표기법의 식을 읽고 후위 표기법으로 변환할 수 있다 (8)`() {
+        val (inputExpression, expectedExpression) = "((a-b)/c+d)*e" to "ab-c/d+e*"
+        val actual = translator.translate(inputExpression)
+        assertEquals(expectedExpression, actual)
+    }
 }

@@ -14,49 +14,46 @@ abstract class Translator {
         '*' to 3,
         '/' to 3,
     )
-    private val brackets = setOf('(', ')')
-
     protected val Char.priority: Int
         get() = operatorPriorities[this] ?: -1
 
     protected val Char.isOperator: Boolean
         get() = operatorPriorities.containsKey(this)
 
-    protected val Char.isBracket: Boolean
-        get() = brackets.contains(this)
+    protected val Char.isOpenBracket: Boolean
+        get() = this == '('
+
+    protected val Char.isNotOpenBracket: Boolean
+        get() = !isOpenBracket
+
+    protected val Char.isCloseBracket: Boolean
+        get() = this == ')'
 }
 
 class InfixToPostfixTranslator : Translator() {
 
     private val stack = Stack<Char>()
 
-//    init {
-//        stack.push('(')
-//    }
-
-    override fun translate(expression: String): String {
-        val sb = StringBuilder()
+    override fun translate(expression: String) = buildString {
         expression.forEach {
             if (it.isOperator) {
                 while (stack.isNotEmpty() && stack.peek().priority >= it.priority) {
-                    sb.append(stack.pop())
+                    append(stack.pop())
                 }
                 stack.push(it)
-            } else if (it == '(') {
+            } else if (it.isOpenBracket) {
                 stack.push(it)
-            } else if (it == ')') {
-                while (true) {
-                    val top = stack.pop()
-                    if (top == '(') break
-                    sb.append(top)
+            } else if (it.isCloseBracket) {
+                while (stack.isNotEmpty() && stack.peek().isNotOpenBracket) {
+                    append(stack.pop())
                 }
+                stack.pop()
             } else {
-                sb.append(it)
+                append(it)
             }
         }
         while (stack.isNotEmpty()) {
-            sb.append(stack.pop())
+            append(stack.pop())
         }
-        return sb.toString()
     }
 }
